@@ -1,0 +1,388 @@
+﻿<Window x:Class="Maistaxi.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Maistaxi"
+        mc:Ignorable="d"
+        Title="+TÁXI" Height="620" Width="850" MinHeight="360" MinWidth="425" Activated="Window_Activated" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+    <Window.Resources>
+    </Window.Resources>
+    <Grid>
+
+        <TabControl Margin="10,95,10,10">
+            <TabControl.Effect>
+                <DropShadowEffect BlurRadius="6" ShadowDepth="3" Opacity="0.5"/>
+            </TabControl.Effect>
+
+            <!-- ETAPA DE CONFIGURAÇÃO -->
+
+            <!-- ETAPA DE CADASTRO-->
+            <TabItem x:Name="tabCadastro" Header="1. Cadastro do Sorteio">
+                <Grid x:Name="grdCadastro">
+                    <Grid x:Name="grdFormCadastro">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="221*"/>
+                            <ColumnDefinition Width="484*"/>
+                            <ColumnDefinition Width="111*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Nome do Sorteio" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Padding="0,5,5,5"/>
+                        <TextBox x:Name="txtNomeSorteio" Height="23" TextWrapping="Wrap" Text="{Binding Nome, ValidatesOnDataErrors=True}" Margin="10,36,10,0" VerticalAlignment="Top" MaxLength="200" VerticalContentAlignment="Center" Grid.ColumnSpan="3"/>
+                        <Label Content="Candidatos Inscritos" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Padding="0,5,5,5"/>
+                        <TextBox x:Name="arqInscritos" Height="23" TextWrapping="Wrap" Text="{Binding Inscritos, ValidatesOnDataErrors=True}" Margin="10,90,10,0" VerticalAlignment="Top" MaxLength="200" VerticalContentAlignment="Center" Grid.ColumnSpan="3" GotFocus="gridArquivoImportacaoFaixaA"/>
+                        <Button x:Name="btnAtualizarCadastro" Content="Atualizar Dados" Height="24" Margin="10,345,10,0" VerticalAlignment="Top" Click="buttonAtualizarCadastro_Click" Grid.ColumnSpan="3" IsEnabled="False"/>
+                    </Grid>
+                    <Grid Margin="10,0,10,5" VerticalAlignment="Bottom" Height="24" Grid.ColumnSpan="3">
+                        <Button x:Name="btnExcluirDados" Content="Excluir Dados e Fechar Aplicação" Margin="0,0,0,0" HorizontalAlignment="Left" Click="btnExcluirDados_Click"/>
+                        <Button x:Name="btnAvancarCadastro" Content="Avançar &gt;&gt;" Margin="0,0,0,0" HorizontalAlignment="Right" Width="100" Click="buttonAvancarCadastro_Click"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- ETAPA DE IMPORTAÇÃO -->
+            <TabItem x:Name="tabImportacao" Header="2. Importação dos Candidatos">
+                <Grid>
+                    <Grid x:Name="grdConfiguracaoImportacao">
+                        <Grid x:Name="grdArquivoImportacao" Background="Transparent" AllowDrop="True" DragEnter="gridImportacao_DragEnter" DragLeave="gridImportacao_DragLeave" Margin="10,10,10,0" VerticalAlignment="Top" Height="150" Drop="gridArquivoImportacao_Drop">
+                            <Border BorderBrush="LightGray" BorderThickness="0.6"/>
+                            <Label Content="Arraste um arquivo ou clique para selecioná-lo." VerticalAlignment="Top" Margin="10,10,10,0" FontSize="15" Height="21" VerticalContentAlignment="Center" Padding="0" Visibility="Hidden"/>
+                            <Label x:Name="lblNomeArquivo" Content="" VerticalAlignment="Top" Margin="82,36,10,0" Height="70" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontSize="50"/>
+                            <Label x:Name="lblCaminhoArquivo" Content="" VerticalAlignment="Top" Margin="10,111,10,0" Height="29" HorizontalContentAlignment="Center" FontStyle="Italic"/>
+                            <Image x:Name="imgSemArquivo" Height="70" Source="Resources/arquivo_cinza.png" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,36,0,0" Visibility="Hidden">
+                                <Image.Effect>
+                                    <DropShadowEffect BlurRadius="2" ShadowDepth="5" Opacity="0.5"/>
+                                </Image.Effect>
+                            </Image>
+                            <Image x:Name="imgArquivoSelecionado" Height="70" Source="Resources/arquivo_colorido.png" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,36,0,0" Visibility="Hidden">
+                                <Image.Effect>
+                                    <DropShadowEffect BlurRadius="2" ShadowDepth="5" Opacity="0.5"/>
+                                </Image.Effect>
+                            </Image>
+                            <Image x:Name="imgErrado" Height="70" Source="Resources/errado.png" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,36,0,0" Visibility="Hidden">
+                                <Image.Effect>
+                                    <DropShadowEffect BlurRadius="2" ShadowDepth="5" Opacity="0.5"/>
+                                </Image.Effect>
+                            </Image>
+                            <Image x:Name="imgCerto" Height="70" Source="Resources/certo.png" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,36,0,0" Visibility="Hidden">
+                                <Image.Effect>
+                                    <DropShadowEffect BlurRadius="2" ShadowDepth="5" Opacity="0.5"/>
+                                </Image.Effect>
+                            </Image>
+                        </Grid>
+                        <Button x:Name="btnImportarArquivo" Content="Importar Lista de Candidatos do Arquivo de Entrada" Margin="10,165,10,0" VerticalAlignment="Top" Height="24" IsEnabled="True" Click="buttonImportarArquivo_Click"/>
+                    </Grid>
+                    <Grid x:Name="grdImportacaoEmAndamento" Margin="10,194,10,0" VerticalAlignment="Top" Height="91">
+                        <Border BorderBrush="LightGray" BorderThickness="0.6"/>
+                        <ProgressBar x:Name="pgrImportacao" VerticalAlignment="Top" Height="20" Margin="10,10,10,0"/>
+                        <Label x:Name="lblStatusImportacao" Content="-" VerticalAlignment="Top" Height="41" Margin="10,35,10,0" Padding="0" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    </Grid>
+                    <Grid Margin="10,0,10,5" VerticalAlignment="Bottom" Height="24">
+                        <Button x:Name="btnRecuarImportacao" Content="&lt;&lt; Recuar" Margin="0,0,0,0" HorizontalAlignment="Left" Width="100" Click="buttonRecuarImportacao_Click"/>
+                        <Button x:Name="btnAvancarImportacao" Content="Avançar &gt;&gt;" Margin="0,0,0,0" HorizontalAlignment="Right" Width="100" Height="24" VerticalAlignment="Top" Click="buttonAvancarImportacao_Click"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- ETAPA DE QUANTIDADES -->
+            <TabItem x:Name="tabQuantidades" Header="3. Autorizações por Listas" Height="22" VerticalAlignment="Top">
+                <Grid x:Name="grdQuantidades">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="41*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid VerticalAlignment="Top" Margin="10,10,29,0" Grid.ColumnSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" BorderThickness="1" BorderBrush="LightGray">
+                            <Label Content="Ordem de Sorteio" HorizontalContentAlignment="Center"/>
+                        </Border>
+                        <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray">
+                            <Label Content="Nome da Lista" HorizontalContentAlignment="Center"/>
+                        </Border>
+                        <Border Grid.Column="2" BorderThickness="1" BorderBrush="LightGray">
+                            <Label Content="Autorizações" HorizontalContentAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                    <ListView x:Name="lstQuantidades" Margin="10,41,10,90" ItemsSource="{Binding Listas}" ScrollViewer.VerticalScrollBarVisibility="Visible" KeyboardNavigation.TabNavigation="Continue" Grid.ColumnSpan="2">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="BorderBrush" Value="LightGray"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Padding" Value="2"/>
+                                <Setter Property="Margin" Value="2"/>
+                                <Setter Property="Focusable" Value="False"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="100"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0" Content="{Binding OrdemSorteio}" HorizontalContentAlignment="Center"/>
+                                    <Label Grid.Column="1" Content="{Binding Nome}" HorizontalContentAlignment="Center"/>
+                                    <TextBox Grid.Column="2" Text="{Binding QuantidadeString, ValidatesOnDataErrors=True}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="80" Margin="10,0,0,0" GotFocus="TextBox_GotFocus" MaxLength="5"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Grid VerticalAlignment="Bottom" Margin="10,0,10,63" Height="22" Grid.ColumnSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="Autorizações: " Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Right" FontWeight="Bold" FontSize="15"/>
+                            <Label Grid.Column="1" Content="{Binding TotalVagasTitulares}" Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15"/>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="Suplentes: " Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Right" FontWeight="Bold" FontSize="15"/>
+                            <Label Grid.Column="1" Content="{Binding TotalVagasReserva}" Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15"/>
+                        </Grid>
+                        <Grid Grid.Column="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="Total: " Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Right" FontWeight="Bold" FontSize="15"/>
+                            <Label Grid.Column="1" Content="{Binding TotalVagas}" Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" FontSize="15"/>
+                        </Grid>
+                    </Grid>
+                    <Button x:Name="btnAtualizarQuantidades" Content="Registrar Quantidade de Autorizações por Lista" VerticalAlignment="Bottom" Height="24" Margin="10,0,10,34" Click="buttonAtualizarQuantidades_Click" Grid.ColumnSpan="2"/>
+                    <Grid Margin="10,0,10,5" VerticalAlignment="Bottom" Height="24" Grid.ColumnSpan="2">
+                        <Button x:Name="btnRecuarQuantidades" Content="&lt;&lt; Recuar" Margin="0,0,0,0" HorizontalAlignment="Left" Width="150" Click="buttonRecuarQuantidades_Click"/>
+                        <Button x:Name="btnAvancarQuantidades" Content="Avançar &gt;&gt;" Margin="0,0,0,0" HorizontalAlignment="Right" Width="150" Click="buttonAvancarQuantidades_Click"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- ETAPA DE SORTEIO -->
+            <TabItem x:Name="tabSorteio" Header="4. Sorteio em Andamento">
+                <Grid Grid.Column="0" x:Name="grdSorteio">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="1">
+                            <Grid>
+                                <Grid VerticalAlignment="Top" Margin="10,10,10,0" Height="270">
+                                    <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="10"/>
+                                    <Label x:Name="lblSorteioProximaLista" Content="Próxima lista:" Margin="2,10,10,0" VerticalAlignment="Top" Height="25" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold" Padding="0" FontFamily="Consolas">
+                                        <Label.Effect>
+                                            <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
+                                        </Label.Effect>
+                                    </Label>
+                                    <Label x:Name="lblSorteioListaAtual" Content="Lista em sorteio:" Margin="10,10,10,0" VerticalAlignment="Top" Height="25" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold" Padding="0" Visibility="Hidden">
+                                        <Label.Effect>
+                                            <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
+                                        </Label.Effect>
+                                    </Label>
+                                    <Label Content="{Binding ProximaLista.NomeFormatado}" Margin="10,40,10,0" VerticalAlignment="Top" Height="50" FontSize="40" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold" FontFamily="Arial">
+                                        <Label.Effect>
+                                            <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
+                                        </Label.Effect>
+                                    </Label>
+                                    <Label Name="lblColunas"  Margin="0,120,0,0" VerticalAlignment="Top" Height="60" FontSize="40" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontWeight="Bold" FontFamily="Arial" Content="CPF                  NOME                           (INSCRIÇÃO)" BorderBrush="Transparent" BorderThickness="4" Foreground="Black" >
+                                        <Label.Background>
+                                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                <GradientStop Color="DarkGreen"/>
+                                                <GradientStop Color="DarkGray" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Label.Background>
+                                        <Label.Effect>
+                                            <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
+                                        </Label.Effect>
+                                    </Label>
+                                    <Label x:Name="lblNomeSorteado" Margin="-6,167,-6,0" VerticalAlignment="Top" Height="94" FontSize="70" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold" FontFamily="SegoePrint" Foreground="DarkGreen" Content="+TÁXI" BorderThickness="10" >
+                                        <Label.Effect>
+                                            <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
+                                        </Label.Effect>
+                                        <Label.Background>
+                                            <LinearGradientBrush EndPoint="0.5,1.5" StartPoint="0.5,0">
+                                                <GradientStop Color="Gray"></GradientStop>
+                                                <GradientStop Color="WhiteSmoke" Offset="0.5"></GradientStop>
+                                            </LinearGradientBrush>
+                                        </Label.Background>
+                                    </Label>
+                                    <Label Content="{Binding ProximaLista.VagasText}" Margin="10,60,0,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Left" FontSize="20" VerticalContentAlignment="Center" FontStyle="Italic">
+                                        <Label.Effect>
+                                            <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
+                                        </Label.Effect>
+                                    </Label>
+                                    <Label Content="{Binding ProximaLista.CandidatosText}" Margin="0,60,10,0" VerticalAlignment="Top" Height="40" HorizontalAlignment="Right" FontSize="20" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" FontStyle="Italic">
+                                        <Label.Effect>
+                                            <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
+                                        </Label.Effect>
+                                    </Label>
+                                    <Label x:Name="lblMunicipe" Content="&#xE805;" Margin="10,89,750,0" VerticalAlignment="Top" Height="40" FontSize="25" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontWeight="Bold" FontFamily="Segoe MDL2 Assets" Visibility="Hidden">
+                                        <Label.Effect>
+                                            <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
+                                        </Label.Effect>
+                                    </Label>
+
+                                    <Label x:Name="lblAnimacao" Content="&#xE811;" Margin="50,89,10,0" VerticalAlignment="Top" Height="40" FontSize="25" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontWeight="Bold" FontFamily="Segoe MDL2 Assets" Foreground="Black" Visibility="Hidden">
+                                        <Label.Effect>
+                                            <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
+                                        </Label.Effect>
+                                    </Label>
+                                </Grid>
+                                <Grid x:Name="grdIniciarSorteio">
+                                    <CheckBox x:Name="chkSementePersonalizada" Content="Utilizar semente de sorteio personalizada?" HorizontalAlignment="Left" Margin="10,285,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                                    <TextBox x:Name="txtSementePersonalizada"  Height="23" Margin="10,305,10,0" TextWrapping="Wrap" VerticalAlignment="Top" IsEnabled="False" VerticalContentAlignment="Center"/>
+                                    <Button x:Name="btnSortearProximaLista" Content="Sortear Próximo da Lista!" Margin="10,333,10,0" VerticalAlignment="Top" Height="50" FontSize="15" Click="buttonSortearProximaLista_Click"/>
+                                </Grid>
+                            </Grid>
+                            <Grid Margin="10,388,10,34">
+                                <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="10"/>
+                                <Grid x:Name="grdSorteioEmAndamento" IsEnabled="False">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60*"/>
+                                        <ColumnDefinition Width="139*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ProgressBar x:Name="pgrSorteio" VerticalAlignment="Top" Height="20" Margin="10,10,10,0" Grid.ColumnSpan="2"/>
+                                    <Label x:Name="lblStatusSorteio" VerticalAlignment="Top" Height="40" Margin="10,35,10,0" Padding="0" FontWeight="Bold" FontSize="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.ColumnSpan="2"/>
+                                </Grid>
+                                <TextBox x:Name="txtLogSorteio" Margin="10,145,10,10" IsReadOnly="True" VerticalScrollBarVisibility="Visible" FontSize="15"/>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid Margin="0,0,10,5" VerticalAlignment="Bottom" Height="24">
+                        <Button x:Name="btnRecuarSorteio" Content="&lt;&lt; Recuar" Margin="0,0,0,0" HorizontalAlignment="Left" Width="100" Click="buttonRecuarSorteio_Click"/>
+                        <Button x:Name="btnAvancarSorteio" Content="Avançar &gt;&gt;" Margin="0,0,0,0" HorizontalAlignment="Right" Width="100" Click="buttonAvancarSorteio_Click"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- ETAPA FINAL -->
+            <TabItem x:Name="tabFinalizado" Header="5. Sorteio Finalizado">
+                <Grid x:Name="grdFinalizado">
+                    <Grid VerticalAlignment="Top" Margin="10,10,10,0" Height="135">
+                        <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="10"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Image Source="Resources/certo.png" Width="50" Height="50">
+                                <Image.Effect>
+                                    <DropShadowEffect BlurRadius="2" ShadowDepth="5" Opacity="0.5"/>
+                                </Image.Effect>
+                            </Image>
+                            <Label Content="Sorteio Finalizado!" FontSize="40" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold">
+                                <Label.Effect>
+                                    <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
+                                </Label.Effect>
+                            </Label>
+                        </StackPanel>
+                    </Grid>
+                    <Button x:Name="btnExportarListas" Content="Exportar Listas!" VerticalAlignment="Top" Height="50" Margin="10,229,10,0" Click="buttonExportarListas_Click"/>
+                    <Label x:Name="lblStatusExportacao" Content="-" VerticalAlignment="Top" Height="41" Margin="10,284,10,0" Padding="0" FontWeight="Bold" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <Button x:Name="btnAbrirDiretorioExportacao" Content="Abrir Diretório de Exportação." VerticalAlignment="Top" Height="24" Margin="10,330,10,0" Click="btnAbrirDiretorioExportacao_Click" Visibility="Hidden"/>
+                    <Grid Margin="10,0,10,5" VerticalAlignment="Bottom" Height="24">
+                        <Button x:Name="btnRecuarFinalizado" Content="&lt;&lt; Recuar" Margin="0,0,0,0" HorizontalAlignment="Left" Width="100" Click="buttonRecuarFinalizado_Click"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Listas">
+                <Grid Grid.Column="0">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="70" />
+                    </Grid.RowDefinitions>
+                    <ListView x:Name="lstSorteioListasSorteio" Grid.Row="1" ItemsSource="{Binding Listas}" Margin="10,0,10,35" Grid.RowSpan="2">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="BorderBrush" Value="White"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Padding" Value="2"/>
+                                <Setter Property="Focusable" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Sorteada}" Value="true">
+                                        <Setter Property="Background" Value="LightGreen"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Publicada}" Value="True">
+                                        <Setter Property="Background" Value="LightBlue"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Content="SALVAR" Click="btnSalvarLista_Click">
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="Visibility" Value="Hidden" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Sorteada}" Value="true">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <Image Grid.Column="1" Source="Resources/certo.png" Width="20" Height="20">
+                                        <Image.Style>
+                                            <Style TargetType="{x:Type Image}">
+                                                <Setter Property="Visibility" Value="Hidden" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Sorteada}" Value="true">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                    <Label Grid.Column="2" Content="{Binding NomeFormatado}" HorizontalContentAlignment="Left"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Grid Grid.Row="0" Margin="10,4,10,6">
+                        <Border Grid.Column="0" BorderThickness="1" BorderBrush="LightGray">
+                            <Label Content="Listas de Sorteio" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="15"/>
+                        </Border>
+                    </Grid>
+                    <Button x:Name="btnSorteioAndamento" Content="Sorteio em Andamento" Margin="0,0,20,0" HorizontalAlignment="Right" Width="150" Height="20" Click="buttonAvancarQuantidades_Click"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <Image HorizontalAlignment="Left" Height="70" Margin="10,10,0,0" VerticalAlignment="Top" Width="205" Source="Resources/logotipo.jpg"/>
+        <Image HorizontalAlignment="Right" Height="70" Margin="10,10,0,0" VerticalAlignment="Top" Width="205" Source="Resources/URBES.jpg"/>
+        
+        <Label Content="{Binding Nome}" Margin="220,10,10,0" VerticalAlignment="Top" Height="32" FontSize="21" FontWeight="Bold" HorizontalContentAlignment="Center" Padding="0">
+            <Label.Effect>
+                <DropShadowEffect BlurRadius="1" ShadowDepth="2" Opacity="0.2"/>
+            </Label.Effect>
+        </Label>
+        <Label x:Name="lblEtapaSorteio" Content="Etapa do Sorteio" Margin="220,48,10,0" VerticalAlignment="Top" Height="32" FontSize="21" FontStyle="Italic" HorizontalContentAlignment="Center" Padding="0">
+            <Label.Effect>
+                <DropShadowEffect BlurRadius="1" ShadowDepth="1" Opacity="0.1"/>
+            </Label.Effect>
+        </Label>
+
+    </Grid>
+</Window>
